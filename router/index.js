@@ -13,8 +13,8 @@ router.get('/products', productController.getAllProducts)
 router.get('/products/details', productController.getOneProduct)
 router.post('/products/search', productController.getSearchProducts)
 router.post('/products/filter', productController.getAdvancedSearchProducts)
-router.post('/products/delete', productController.deleteProduct)
-router.post('/products/add', productController.addProduct)
-router.put('/products/update', productController.updateProduct)
+router.post('/products/delete', verify, productController.deleteProduct)
+router.post('/products/add', verify, productController.addProduct)
+router.put('/products/update', verify, productController.updateProduct)
 
 module.exports = router
