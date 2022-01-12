@@ -30,8 +30,12 @@ class ProductController {
         res.status(200).json(products)
     }
     async getOneProduct(req, res){
-        const product = await Product.findById(req.query.id)
-        res.status(200).json(product)
+        try{
+            const product = await Product.findById(req.query.id)
+            res.status(200).json(product)
+        }catch(err){
+            res.status(404).json({code: 1, message: "Not found"})
+        }
     }
     async getSearchProducts(req, res){
         const title = req.body.config.title
