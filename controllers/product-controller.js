@@ -29,6 +29,39 @@ class ProductController {
         const products = await Product.find({})
         res.status(200).json(products)
     }
+
+    async getProducts(req, res){
+        const pageNumber = req.query.page
+        let products
+        let totalProductsCount
+        if(req.body.config){
+            const title = req.body.config.title
+            const regex = new RegExp(title)
+            const config = {...req.body.config}
+            products = await Product.find({
+                ...config,
+                title: {$regex: regex, $options: 'i'}
+            })
+            if(config.priceFrom) products = products.filter(product => Number(product.price) >= config.priceFrom)
+            if(config.priceTo) products = products.filter(product => Number(product.price) <= config.priceTo)
+            totalProductsCount = products.length
+            products = products.filter((product, ind) => {
+                return ind < pageNumber * 5 && ind >= (pageNumber * 5) - 5
+            })
+        }
+        if(!req.body.config){
+            products = await Product.find({}).limit(5).skip((pageNumber -1) * 5)
+            totalProductsCount = await Product.count()
+        }
+        res.status(200).json({data: products, totalProductsCount})
+    }
+
+    // async getProductsByPage(req, res){
+    //     const pageNumber = req.query.page
+    //     const products = await Product.find({}).limit(5).skip((pageNumber -1) * 5)
+    //     const totalProductsCount = await Product.count()
+    //     res.status(200).json({data: products, totalProductsCount})
+    // }
     async getOneProduct(req, res){
         try{
             const product = await Product.findById(req.query.id)
@@ -43,12 +76,30 @@ class ProductController {
         const config = {...req.body.config}
         let products = await Product.find({
             ...config,
-            title: {$regex: regex, $options: 'i'
-        }})
+            title: {$regex: regex, $options: 'i'}
+        })
         if(config.priceFrom) products = products.filter(product => Number(product.price) >= priceFrom)
         if(config.priceTo) products = products.filter(product => Number(product.price) <= priceTo)
         res.status(200).json(products)
     }
+    // async getSearchProductsByPage(req, res){
+    //     const pageNumber = req.query.page
+    //     const title = req.body.config.title
+    //     const regex = new RegExp(title)
+    //     const config = {...req.body.config}
+    //     let totalProductsCount
+    //     let products = await Product.find({
+    //         ...config,
+    //         title: {$regex: regex, $options: 'i'}
+    //     })
+    //     if(config.priceFrom) products = products.filter(product => Number(product.price) >= priceFrom)
+    //     if(config.priceTo) products = products.filter(product => Number(product.price) <= priceTo)
+    //     totalProductsCount = products.length
+    //     products = products.filter((product, ind) => {
+    //         return ind < pageNumber * 5 && ind >= (pageNumber * 5) - 5
+    //     })
+    //     res.status(200).json({data: products, totalProductsCount})
+    // }
     async getAdvancedSearchProducts(req, res){
         const priceFrom = req.body.formArr.priceFrom
         const priceTo = req.body.formArr.priceTo
@@ -61,6 +112,24 @@ class ProductController {
         }
         res.status(200).json(products)
     }
+    // async getAdvancedSearchProductsByPage(req, res){
+    //     const pageNumber = req.query.page
+    //     const priceFrom = req.body.formArr.priceFrom
+    //     const priceTo = req.body.formArr.priceTo
+    //     let totalProductsCount
+    //     let products = await Product.find(req.body.formArr)
+    //     if(priceFrom){
+    //         products = products.filter(product => Number(product.price) >= priceFrom)
+    //     }
+    //     if(priceTo){
+    //         products = products.filter(product => Number(product.price) <= priceTo)
+    //     }
+    //     totalProductsCount = products.length
+    //     products = products.filter((product, ind) => {
+    //         return ind < pageNumber * 5 && ind >= (pageNumber * 5) - 5
+    //     })
+    //     res.status(200).json({data: products, totalProductsCount})
+    // }
     async deleteProduct(req, res){
         try{
             await Product.deleteOne({_id: req.body.id})
