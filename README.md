@@ -201,11 +201,26 @@ Work with products
   Response:
   If success: receive array of filtered objects
   
+/get-products (Get products including filtered)
 
+  Request:
+  POST
+  Body - 
+  {"config":
+    {
+        "title": "search value", //optional, if you search by title only then do not include any of the key-value next, just like this: {"config": {"title": "search value"}}
+        "available": "Yes or No only", //optional filter
+        "category": "Expensive or Cheap or Super cheap only", //optional filter
+        "gender": "Unisex or Male or Female only", //optional filter
+        "priceTo": "900 or any other number", //optional filter
+        "priceFrom": "10 or any other number", //optional filter
+        "rating": "5 or any 1 to 5 number" //optional filter
+    }
+  } // if want to get all products then pass empty config {}
+  Headers - {page: "page number"}
   
- 
-  
-  
-  
-  
-  
+  Response:
+  {
+    data: [Array of maximum of 5 items],
+    totalProductsCount: // number of total items found matching request
+  }
