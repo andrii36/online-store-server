@@ -224,3 +224,28 @@ Work with products
     data: [Array of maximum of 5 items],
     totalProductsCount: // number of total items found matching request
   }
+
+  /purchase (Buy product)
+
+  Request:
+  POST
+  Body - {} (empty)
+  Headers - {authtoken: "your token"}
+  Query params - id="item id"
+  
+  Response:
+  If success:
+  {
+    "code": 0,
+    "message": "Product purchased"
+  }
+  If product number in stock is 0:
+  {
+    "code": 1,
+    "message": "Product is not available"
+  }
+  If bad request:
+  {
+    "code": 1,
+    "message": "Error"
+  }
