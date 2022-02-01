@@ -57,13 +57,16 @@ class ProductController {
         if (req.body.config) {
             const title = req.body.config.title
             const regex = new RegExp(title)
+            const available = req.body.config.available
             const config = { ...req.body.config }
+            delete config.available
             products = await Product.find({
                 ...config,
                 title: { $regex: regex, $options: 'i' }
             })
             if (config.priceFrom) products = products.filter(product => Number(product.price) >= config.priceFrom)
             if (config.priceTo) products = products.filter(product => Number(product.price) <= config.priceTo)
+            if (available == "Yes") products = products.filter(product => Number(product.available) > 0)
             totalProductsCount = products.length
             products = products.filter((product, ind) => {
                 return ind < pageNumber * 5 && ind >= (pageNumber * 5) - 5
