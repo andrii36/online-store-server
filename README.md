@@ -217,7 +217,7 @@ Work with products
         "rating": "5 or any 1 to 5 number" //optional filter
     }
   } // if want to get all products then pass empty config {}
-  Headers - {page: "page number"}
+  Query params - page= "page number"
   
   Response:
   {

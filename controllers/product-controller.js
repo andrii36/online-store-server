@@ -96,13 +96,16 @@ class ProductController {
     async getSearchProducts(req, res) {
         const title = req.body.config.title
         const regex = new RegExp(title)
+        const available = req.body.config.available
         const config = { ...req.body.config }
+        delete config.available
         let products = await Product.find({
             ...config,
             title: { $regex: regex, $options: 'i' }
         })
         if (config.priceFrom) products = products.filter(product => Number(product.price) >= priceFrom)
         if (config.priceTo) products = products.filter(product => Number(product.price) <= priceTo)
+        if (available == "Yes") products = products.filter(product => Number(product.available) > 0)
         res.status(200).json(products)
     }
     // async getSearchProductsByPage(req, res){
@@ -124,15 +127,19 @@ class ProductController {
     //     res.status(200).json({data: products, totalProductsCount})
     // }
     async getAdvancedSearchProducts(req, res) {
-        const priceFrom = req.body.formArr.priceFrom
-        const priceTo = req.body.formArr.priceTo
-        let products = await Product.find(req.body.formArr)
-        if (priceFrom) {
+        // const priceFrom = req.body.formArr.priceFrom
+        // const priceTo = req.body.formArr.priceTo
+        const available = req.body.formArr.available
+        const formArr = { ...req.body.formArr }
+        delete formArr.available
+        let products = await Product.find(formArr)
+        if (formArr.priceFrom) {
             products = products.filter(product => Number(product.price) >= priceFrom)
         }
-        if (priceTo) {
+        if (formArr.priceTo) {
             products = products.filter(product => Number(product.price) <= priceTo)
         }
+        if (available == "Yes") products = products.filter(product => Number(product.available) > 0)
         res.status(200).json(products)
     }
     // async getAdvancedSearchProductsByPage(req, res){
