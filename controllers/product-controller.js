@@ -104,6 +104,8 @@ class ProductController {
     }
     async getSearchProducts(req, res) {
         try{
+        const priceFrom = req.body.config.priceFrom
+        const priceTo = req.body.config.priceTo
         const title = req.body.config.title
         const regex = new RegExp(title)
         const available = req.body.config.available
@@ -113,8 +115,8 @@ class ProductController {
             ...config,
             title: { $regex: regex, $options: 'i' }
         })
-        if (config.priceFrom) products = products.filter(product => Number(product.price) >= priceFrom)
-        if (config.priceTo) products = products.filter(product => Number(product.price) <= priceTo)
+        if (priceFrom) products = products.filter(product => Number(product.price) >= priceFrom)
+        if (priceTo) products = products.filter(product => Number(product.price) <= priceTo)
         if (available == "Yes") products = products.filter(product => Number(product.available) > 0)
         res.status(200).json(products)
         }catch(error){
@@ -141,16 +143,16 @@ class ProductController {
     // }
     async getAdvancedSearchProducts(req, res) {
         try{
-        // const priceFrom = req.body.formArr.priceFrom
-        // const priceTo = req.body.formArr.priceTo
+        const priceFrom = req.body.formArr.priceFrom
+        const priceTo = req.body.formArr.priceTo
         const available = req.body.formArr.available
         const formArr = { ...req.body.formArr }
         delete formArr.available
         let products = await Product.find(formArr)
-        if (formArr.priceFrom) {
+        if (priceFrom) {
             products = products.filter(product => Number(product.price) >= priceFrom)
         }
-        if (formArr.priceTo) {
+        if (priceTo) {
             products = products.filter(product => Number(product.price) <= priceTo)
         }
         if (available == "Yes") products = products.filter(product => Number(product.available) > 0)
