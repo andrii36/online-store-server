@@ -46,11 +46,16 @@ class ProductController {
         }
     }
     async getAllProducts(req, res) {
-        const products = await Product.find({})
-        res.status(200).json(products)
+        try{
+            const products = await Product.find({})
+            res.status(200).json(products)
+        }catch(error){
+            res.status(400).json("Bad request")
+        }
     }
 
     async getProducts(req, res) {
+        try{
         const pageNumber = req.query.page
         let products
         let totalProductsCount
@@ -77,6 +82,10 @@ class ProductController {
             totalProductsCount = await Product.count()
         }
         res.status(200).json({ data: products, totalProductsCount })
+        }catch(error){
+            res.status(400).json("Bad request")
+        }
+        
     }
 
     // async getProductsByPage(req, res){
@@ -94,6 +103,7 @@ class ProductController {
         }
     }
     async getSearchProducts(req, res) {
+        try{
         const title = req.body.config.title
         const regex = new RegExp(title)
         const available = req.body.config.available
@@ -107,6 +117,9 @@ class ProductController {
         if (config.priceTo) products = products.filter(product => Number(product.price) <= priceTo)
         if (available == "Yes") products = products.filter(product => Number(product.available) > 0)
         res.status(200).json(products)
+        }catch(error){
+            res.status(400).json("Bad request")
+        }
     }
     // async getSearchProductsByPage(req, res){
     //     const pageNumber = req.query.page
@@ -127,6 +140,7 @@ class ProductController {
     //     res.status(200).json({data: products, totalProductsCount})
     // }
     async getAdvancedSearchProducts(req, res) {
+        try{
         // const priceFrom = req.body.formArr.priceFrom
         // const priceTo = req.body.formArr.priceTo
         const available = req.body.formArr.available
@@ -141,6 +155,9 @@ class ProductController {
         }
         if (available == "Yes") products = products.filter(product => Number(product.available) > 0)
         res.status(200).json(products)
+        }catch(error){
+            res.status(400).json("Bad request")
+        }
     }
     // async getAdvancedSearchProductsByPage(req, res){
     //     const pageNumber = req.query.page
