@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser')
 const router = require('./router/index')
 const checkContType = require('./checkContType')
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5001
 
 const app = express()
 app.use(express.json())
@@ -17,10 +17,7 @@ app.use('/api', router)
 
 const start = async () => {
     try {
-        await mongoose.connect(process.env.DB_URL, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        })
+        await mongoose.connect(process.env.DB_URL)
         app.listen(PORT, () => console.log("Running on " + PORT))
     } catch (error) {
         console.log(error)
